@@ -2,18 +2,23 @@ import time
 import sys
 from playsound import playsound
 from selenium.webdriver import Chrome
-from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
 webdriver = './chromedriver.exe'
-club = input('Vælg et superligahold: ')
+print("Først vælges en liga, f.eks. \"LaLiga\", \"Superliga\", \"Champions League\".")
+print("Dernæst vælges et hold, f.eks. \"Real Madrid\", \"FC København\", \"Juventus\"")
+league = input("Vælg en liga: ")
+club = input('Vælg et hold fra denne liga: ')
 driver = Chrome(webdriver)
 url = "http://flashscore.dk"
 driver.get(url)
 # Click the specified league tab
-league = 'Superliga'
 time.sleep(2)
-league_link = driver.find_element_by_link_text(league)
+try:
+    league_link = driver.find_element_by_link_text(league)
+except NoSuchElementException:
+    print("Den indtastede liga kunne ikke findes.")
+    sys.exit()
 league_link.click()
 # click the match with the specified id
 time.sleep(2)
@@ -26,12 +31,8 @@ for x in match_links:
         clubfound = True
         break
 if(not clubfound):
-    print("Det indtastede klubnavn kunne ikke findes. Prøv igen")
+    print("Det indtastede klubnavn kunne ikke findes. :'(")
     sys.exit()
-# INSERT if statement find FCK
-# parentElement = driver.find_element_by_class_name("bar")
-# elementList = parentElement.find_elements_by_tag_name("li")
-# match_links[0].click()
 
 # click the lineup fan, if present. Otherwise try again in 5 seconds.
 time.sleep(2)
